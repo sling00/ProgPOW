@@ -111,7 +111,7 @@ public:
 		string arg = argv[i];
 		if ((arg == "-F" || arg == "--farm") && i + 1 < argc)
 		{
-			deprecated(arg);
+//			deprecated(arg);
 			m_mode = OperationMode::Farm;
 			string url = argv[++i];
 			URI uri;
@@ -141,7 +141,7 @@ public:
 		}
 		else if ((arg == "-FF" || arg == "-SF" || arg == "-FS" || arg == "--farm-failover" || arg == "--stratum-failover") && i + 1 < argc)
 		{
-			deprecated(arg);
+//			deprecated(arg);
 			string url = argv[++i];
 			if (url == "exit") // add fake port # to exit url
 				url = "exit:1";
@@ -197,7 +197,7 @@ public:
 			}
 		else if ((arg == "-S" || arg == "--stratum") && i + 1 < argc)
 		{
-			deprecated(arg);
+//			deprecated(arg);
 			m_mode = OperationMode::Stratum;
 
 			string url = string(argv[++i]);
@@ -224,7 +224,7 @@ public:
 		}
 		else if ((arg == "-O" || arg == "--userpass") && i + 1 < argc)
 		{
-			deprecated(arg);
+//			deprecated(arg);
 			string userpass = string(argv[++i]);
 			size_t p = userpass.find_first_of(":");
 			m_endpoints[k_primary_ep_ix].User(userpass.substr(0, p));
@@ -276,7 +276,7 @@ public:
 		}
 		else if ((arg == "-FO" || arg == "--failover-userpass") && i + 1 < argc)
 		{
-			deprecated(arg);
+//			deprecated(arg);
 			string userpass = string(argv[++i]);
 			size_t p = userpass.find_first_of(":");
 			m_endpoints[k_secondary_ep_ix].User(userpass.substr(0, p));
@@ -674,7 +674,7 @@ public:
 		}
 
 		auto* build = ethminer_get_buildinfo();
-		minelog << "ethminer version " << build->project_version;
+		minelog << "progpowminer version " << build->project_version;
 		minelog << "Build: " << build->system_name << "/" << build->build_type
 			 << "+git." << string(build->git_commit_hash).substr(0, 7);
 
@@ -750,13 +750,13 @@ public:
 	{
 		_out
 			<< "Work farming mode:" << endl
-			<< "    -F,--farm <url>  (deprecated) Put into mining farm mode with the work server at URL (default: http://127.0.0.1:8545)" << endl
-			<< "    -FF,-FO, --farm-failover, --stratum-failover <url> (deprecated) Failover getwork/stratum URL (default: disabled)" << endl
+			<< "    -F,--farm <url> Put into mining farm mode with the work server at URL (default: http://127.0.0.1:8545)" << endl
+			<< "    -FF,-FO, --farm-failover, --stratum-failover <url> Failover getwork/stratum URL (default: disabled)" << endl
 			<< "	--farm-retries <n> Number of retries until switch to failover (default: 3)" << endl
 			<< "	-S, --stratum <host:port>  (deprecated) Put into stratum mode with the stratum server at host:port" << endl
-			<< "	-SF, --stratum-failover <host:port>  (deprecated) Failover stratum server at host:port" << endl
-			<< "    -O, --userpass <username.workername:password> (deprecated) Stratum login credentials" << endl
-			<< "    -FO, --failover-userpass <username.workername:password> (deprecated) Failover stratum login credentials (optional, will use normal credentials when omitted)" << endl
+			<< "	-SF, --stratum-failover <host:port> Failover stratum server at host:port" << endl
+			<< "    -O, --userpass <username.workername:password> Stratum login credentials" << endl
+			<< "    -FO, --failover-userpass <username.workername:password> Failover stratum login credentials (optional, will use normal credentials when omitted)" << endl
 			<< "    --work-timeout <n> reconnect/failover after n seconds of working on the same (stratum) job. Defaults to 180. Don't set lower than max. avg. block time" << endl
 			<< "    --stratum-ssl [<n>]  (deprecated) Use encryption to connect to stratum server." << endl
 			<< "        0: Force TLS1.2 (default)" << endl

@@ -618,7 +618,7 @@ void CUDAMiner::search(
 					found_count = SEARCH_RESULTS;
 				for (unsigned int j = 0; j < found_count; j++) {
 					nonces[j] = nonce_base + buffer->result[j].gid;
-					if (s_noeval)
+//					if (s_noeval)
 						memcpy(mixes[j].data(), (void *)&buffer->result[j].mix, sizeof(buffer->result[j].mix));
 				}
 			}
@@ -635,19 +635,19 @@ void CUDAMiner::search(
             if (found_count)
             {
                 for (uint32_t i = 0; i < found_count; i++)
-                    if (s_noeval)
+//                    if (s_noeval)
                         farm.submitProof(Solution{nonces[i], mixes[i], w, m_new_work});
-                    else
-                    {
-                        Result r = EthashAux::eval(w.epoch, w.header, nonces[i]);
-                        if (r.value < w.boundary)
-                            farm.submitProof(Solution{nonces[i], r.mixHash, w, m_new_work});
-                        else
-                        {
-                            farm.failedSolution();
-                            cwarn << "GPU gave incorrect result!";
-                        }
-                    }
+//                    else
+//                    {
+//                        Result r = EthashAux::eval(w.epoch, w.header, nonces[i]);
+//                        if (r.value < w.boundary)
+//                            farm.submitProof(Solution{nonces[i], r.mixHash, w, m_new_work});
+//                        else
+//                        {
+//                            farm.failedSolution();
+//                            cwarn << "GPU gave incorrect result!";
+//                        }
+//                    }
             }
 
             addHashCount(batch_size);

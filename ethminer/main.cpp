@@ -39,7 +39,7 @@ using namespace boost::algorithm;
 void help()
 {
 	cout
-		<< "Usage ethminer [OPTIONS]" << endl
+		<< "Usage progpowminer [OPTIONS]" << endl
 		<< "Options:" << endl << endl;
 	MinerCLI::streamHelp(cout);
 	cout
@@ -56,7 +56,7 @@ void help()
 void version()
 {
     auto* bi = ethminer_get_buildinfo();
-    cout << "ethminer version " << bi->project_version << "+git." << string(bi->git_commit_hash).substr(0, 7) << endl;
+    cout << "progpowminer version " << bi->project_version << "+git." << string(bi->git_commit_hash).substr(0, 7) << endl;
     cout << "Build: " << bi->system_name << "/" << bi->build_type << "/" << bi->compiler_id << endl;
     exit(0);
 }
