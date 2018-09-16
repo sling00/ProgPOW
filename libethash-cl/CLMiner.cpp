@@ -704,7 +704,7 @@ bool CLMiner::init(int epoch)
             // ProgPoW uses epoch as seed for RNG, the approach makes w, wnew, and jcong practically constant
             code = ProgPow::getKern((uint64_t)epoch, ProgPow::KERNEL_CL);
             code += string(progpow_cl, sizeof(progpow_cl));
-            addDefinition(code, "PROGPOW_DAG_BYTES", (uint)dagSize);
+            addDefinition(code, "PROGPOW_DAG_BYTES", (uint)(dagSize);
             addDefinition(code, "PROGPOW_DAG_WORDS", dagWords);
         }
         else
