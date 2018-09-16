@@ -685,7 +685,7 @@ bool CLMiner::init(int epoch)
         const auto lightNumItems = context.light_cache_num_items;
         const auto lightSize = ethash::get_light_cache_size(lightNumItems);
         m_dagItems = context.full_dataset_num_items;
-        const auto dagSize = ethash::get_full_dataset_size(m_dagItems);
+        const auto dagSize = (unsigned)ethash::get_full_dataset_size(m_dagItems);
         const auto dagWords = (unsigned)(dagSize / ETHASH_MIX_BYTES);
 
         // patch source code
@@ -704,7 +704,7 @@ bool CLMiner::init(int epoch)
             // ProgPoW uses epoch as seed for RNG, the approach makes w, wnew, and jcong practically constant
             code = ProgPow::getKern((uint64_t)epoch, ProgPow::KERNEL_CL);
             code += string(progpow_cl, sizeof(progpow_cl));
-            addDefinition(code, "PROGPOW_DAG_BYTES", (uint)(dagSize);
+            addDefinition(code, "PROGPOW_DAG_BYTES", dagSize);
             addDefinition(code, "PROGPOW_DAG_WORDS", dagWords);
         }
         else
