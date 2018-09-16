@@ -9,15 +9,29 @@ add_custom_command(
 	-DBIN2H_SOURCE_FILE="${CMAKE_CURRENT_SOURCE_DIR}/kernels/cl/ethash.cl"
 	-DBIN2H_VARIABLE_NAME=ethash_cl
 	-DBIN2H_HEADER_FILE="${CMAKE_CURRENT_BINARY_DIR}/ethash.h"
-	-P "${CMAKE_CURRENT_SOURCE_DIR}/bin2h.cmake"
-	COMMENT "Generating OpenCL Kernel Byte Array"
+	-P "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/bin2h.cmake"
+	COMMENT "Generating OpenCL Ethash Kernel Byte Array"
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cl/ethash.cl
 )
-add_custom_target(clbin2h_stable DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/ethash.h ${CMAKE_CURRENT_SOURCE_DIR}/cl/ethash.cl)
+add_custom_target(clbin2h_ethash DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/ethash.h ${CMAKE_CURRENT_SOURCE_DIR}/cl/ethash.cl)
+
+add_custom_command(
+	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/progpow.h
+	COMMAND ${CMAKE_COMMAND} ARGS
+	-DBIN2H_SOURCE_FILE="${CMAKE_CURRENT_SOURCE_DIR}/kernels/cl/progpow.cl"
+	-DBIN2H_VARIABLE_NAME=progpow_cl
+	-DBIN2H_HEADER_FILE="${CMAKE_CURRENT_BINARY_DIR}/progpow.h"
+	-P "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/bin2h.cmake"
+	COMMENT "Generating OpenCL ProgPoW Kernel Byte Array"
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/kernels/cl/progpow.cl
+)
+add_custom_target(clbin2h_progpow DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/progpow.h ${CMAKE_CURRENT_SOURCE_DIR}/cl/progpow.cl)
+
 
 set(SOURCES
 	CLMiner.h CLMiner.cpp
 	${CMAKE_CURRENT_BINARY_DIR}/ethash.h
+	${CMAKE_CURRENT_BINARY_DIR}/progpow.h
 )
 
 if(APPLE)
@@ -33,5 +47,6 @@ include_directories(..)
 
 add_library(ethash-cl ${SOURCES})
 target_link_libraries(ethash-cl PUBLIC ethcore ethash::ethash)
+target_link_libraries(ethash-cl PUBLIC ethcore progpow)
 target_link_libraries(ethash-cl PRIVATE OpenCL::OpenCL)
 target_link_libraries(ethash-cl PRIVATE Boost::filesystem)

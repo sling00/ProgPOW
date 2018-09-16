@@ -22,7 +22,8 @@ along with ethminer.  If not, see <http://www.gnu.org/licenses/>.
 #include <libdevcore/Worker.h>
 #include <libethcore/EthashAux.h>
 #include <libethcore/Miner.h>
-
+#include <libprogpow/ProgPow.h>
+#include <cuda.h>
 #include <functional>
 
 namespace dev
@@ -48,6 +49,13 @@ public:
     void search(
         uint8_t const* header, uint64_t target, uint64_t _startN, const dev::eth::WorkPackage& w);
 
+    void search(
+            uint8_t const* header,
+            uint64_t target,
+            bool _ethStratum,
+            uint64_t _startN,
+            const dev::eth::WorkPackage& w);
+
     /* -- default values -- */
     /// Default value of the block size. Also known as workgroup size.
     static unsigned const c_defaultBlockSize;
@@ -72,9 +80,15 @@ private:
     int m_dag_size = -1;
     uint32_t m_device_num = 0;
 
+    CUmodule m_module;
+    CUfunction m_kernel;
     volatile search_results** m_search_buf = nullptr;
     cudaStream_t* m_streams = nullptr;
     uint64_t m_current_target = 0;
+    hash32_t m_current_header;
+    uint64_t m_current_nonce;
+    uint64_t m_starting_nonce;
+    uint64_t m_current_index;
 
     uint16_t m_searchPasses = 0;
 
@@ -91,6 +105,9 @@ private:
 
     static unsigned s_numInstances;
     static vector<int> s_devices;
+
+    void compileKernel(int epoch, uint64_t dag_words);
+
 };
 
 

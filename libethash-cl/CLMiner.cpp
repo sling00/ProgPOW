@@ -9,6 +9,7 @@
 
 #include "CLMiner.h"
 #include "ethash.h"
+#include "progpow.h"
 
 using namespace dev;
 using namespace eth;
@@ -384,7 +385,7 @@ void CLMiner::workLoop()
                 m_searchKernel.setArg(5, target);
                 m_searchKernel.setArg(6, 0xffffffff);
 
-                if (g_logVerbosity > 5)
+                if (g_logVerbosity >= 6)
                     cllog << "Switch time: "
                           << std::chrono::duration_cast<std::chrono::microseconds>(
                                  std::chrono::steady_clock::now() - workSwitchStart)
@@ -520,10 +521,14 @@ bool CLMiner::configureGPU(unsigned _localWorkSize, unsigned _globalWorkSizeMult
     bool _exit, bool _nobinary)
 {
     s_noeval = _noeval;
+    // ProgPoW CPU validation is not implemented, override
+    s_noeval = true;
     s_dagLoadMode = _dagLoadMode;
     s_dagCreateDevice = _dagCreateDevice;
     s_exit = _exit;
     s_noBinary = _nobinary;
+    // No bins for ProgPoW (yet), override default
+    s_noBinary = true;
 
     s_platformId = _platformId;
 
@@ -681,6 +686,7 @@ bool CLMiner::init(int epoch)
         const auto lightSize = ethash::get_light_cache_size(lightNumItems);
         m_dagItems = context.full_dataset_num_items;
         const auto dagSize = ethash::get_full_dataset_size(m_dagItems);
+        const auto dagWords = (unsigned)(dagSize / ETHASH_MIX_BYTES);
 
         // patch source code
         // note: The kernels here are simply compiled version of the respective .cl kernels
@@ -689,8 +695,23 @@ bool CLMiner::init(int epoch)
         // TODO: Just use C++ raw string literal.
         string code;
 
-        cllog << "OpenCL kernel";
-        code = string(ethash_cl, ethash_cl + sizeof(ethash_cl));
+        // Implementing multi-kernel interface a la setCLKernel/getKern/enum in earlier vers is
+        // possible here - stub for now.
+        bool use_prog = true;
+        if (use_prog)
+        {
+            cllog << "OpenCL ProgPoW kernel";
+            // ProgPoW uses epoch as seed for RNG, the approach makes w, wnew, and jcong practically constant
+            code = ProgPow::getKern((uint64_t)epoch, ProgPow::KERNEL_CL);
+            code += string(progpow_cl, sizeof(progpow_cl));
+            addDefinition(code, "PROGPOW_DAG_BYTES", (uint)dagSize);
+            addDefinition(code, "PROGPOW_DAG_WORDS", dagWords);
+        }
+        else
+        {
+            cllog << "OpenCL Ethash kernel";
+            code = string(ethash_cl, ethash_cl + sizeof(ethash_cl));
+        }
 
         addDefinition(code, "WORKSIZE", m_workgroupSize);
         addDefinition(code, "ACCESSES", 64);

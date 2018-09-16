@@ -647,12 +647,19 @@ std::string EthStratumClient::processError(Json::Value& responseObject)
         }
         else if (responseObject["error"].isConvertibleTo(Json::ValueType::objectValue))
         {
-            for (Json::Value::iterator i = responseObject["error"].begin();
+            for (Json::Value::const_iterator i = responseObject["error"].begin();
                  i != responseObject["error"].end(); ++i)
             {
                 Json::Value k = i.key();
                 Json::Value v = (*i);
-                retVar += (std::string)i.name() + ":" + v.asString() + " ";
+                // Error object values must be strings, but BCI breaks spec; LBYL
+                if (v.isConvertibleTo(Json::ValueType::stringValue)) {
+                    retVar += (std::string)i.name() + ":" + v.asString() + " ";
+                }
+                else
+                {
+                    retVar += "Unknown error from pool ";
+                }
             }
         }
     }

@@ -196,7 +196,7 @@ public:
         const char* CUDAGroup = "CUDA Options";
 #endif
 
-        CLI::App app("Ethminer - GPU Ethereum miner");
+        CLI::App app("ProgPoW GPU Miner");
 
         bool help = false;
         app.set_help_flag();
@@ -510,7 +510,7 @@ public:
             else if (version)
             {
                 auto* bi = ethminer_get_buildinfo();
-                cerr << "\nethminer " << bi->project_version << "\nBuild: " << bi->system_name
+                cerr << "\nprogpowminer " << bi->project_version << "\nBuild: " << bi->system_name
                      << "/" << bi->build_type << "/" << bi->compiler_id << "\n\n";
                 exit(0);
             }
@@ -647,7 +647,7 @@ public:
         }
 
         auto* build = ethminer_get_buildinfo();
-        minelog << "ethminer " << build->project_version;
+        minelog << "progpowminer " << build->project_version;
         minelog << "Build: " << build->system_name << "/" << build->build_type;
 
         if (m_minerType == MinerType::CL || m_minerType == MinerType::Mixed)

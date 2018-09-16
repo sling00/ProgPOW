@@ -75,11 +75,11 @@ extern cudaError_t MyStreamSynchronize(cudaStream_t stream, int situation, int t
 // #define SPH_T64(x) ((x) & SPH_C64(0xFFFFFFFFFFFFFFFF))
 #endif
 
-#define ROTL32c(x, n) ((x) << (n)) | ((x) >> (32 - (n)))
+#define ROTL32c(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
 
 #if __CUDA_ARCH__ < 320
 // Kepler (Compute 3.0)
-#define ROTL32(x, n) ((x) << (n)) | ((x) >> (32 - (n)))
+#define ROTL32(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
 #else
 // Kepler (Compute 3.5, 5.0)
 __device__ __forceinline__ uint32_t ROTL32(const uint32_t x, const uint32_t n)
@@ -130,7 +130,7 @@ __device__ __forceinline__ uint64_t REPLACE_LOWORD(const uint64_t x, const uint3
     return result;
 }
 
-// Endian Drehung für 32 Bit Typen
+// Endian Drehung fï¿½r 32 Bit Typen
 #ifdef __CUDA_ARCH__
 __device__ __forceinline__ uint32_t cuda_swab32(const uint32_t x)
 {

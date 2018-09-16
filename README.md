@@ -1,4 +1,7 @@
-# ethminer
+# ethminer-ProgPoW
+
+**ProgPoW** is a proof-of-work algorithm designed to close the efficency gap available to specialized ASICs.
+Please see [full description](ProgPoW.md) for overview, rationale, and technical walk-through. 
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)][Gitter]
