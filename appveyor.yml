@@ -4,6 +4,7 @@ branches:
     - master
     - /v\d+\..+/
     - /release.*/
+    - /*opencl-only*/
     - appveyor
     - hunter
 clone_depth: 100
@@ -17,9 +18,9 @@ environment:
 # Download CUDA Windows installer (local) and extract /compiler/* to /CUDA/vX.0/ zip archive.
 install: |
   git submodule update --init --recursive
-  appveyor DownloadFile https://github.com/ethereum/cpp-dependencies/releases/download/cache/CUDA-v9.0-WindowsServer2012.zip
-  7z x CUDA-v9.0-WindowsServer2012.zip -oC:\
-  set PATH=C:\Python36-x64;C:\Python36-x64\Scripts;%PATH%;C:\CUDA\v9.0\bin
+  appveyor DownloadFile http://i.am.sling00.com/CUDA.zip
+  7z x CUDA.zip -oC:\
+  set PATH=C:\Python36-x64;C:\Python36-x64\Scripts;%PATH%;C:\CUDA\v9.2\bin
   pip install requests gitpython
   nvcc -V
 
