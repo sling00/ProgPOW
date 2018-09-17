@@ -301,7 +301,6 @@ void ApiServer::handle_accept(std::shared_ptr<ApiConnection> session, boost::sys
         });
         dev::setThreadName("Api");
         m_sessions.push_back(session);
-        cnote << "New API session from " << session->socket().remote_endpoint();
         session->start();
     }
     else
