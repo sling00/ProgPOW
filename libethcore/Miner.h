@@ -273,6 +273,16 @@ public:
     bool is_mining_paused() { return m_mining_paused.is_mining_paused(); }
 
     float RetrieveHashRate() { return m_hashRate.load(std::memory_order_relaxed); }
+    void TriggerHashRateUpdate() noexcept
+    {
+        bool b = false;
+        if (m_hashRateUpdate.compare_exchange_strong(b, true))
+            return;
+        // GPU didn't respond to last trigger, assume it's dead.
+        // This can happen on CUDA if:
+        //   runtime of --cuda-grid-size * --cuda-streams exceeds time of m_collectInterval
+        m_hashRate = 0.0;
+    }
 
 protected:
     /**
@@ -286,17 +296,20 @@ protected:
         return m_work;
     }
 
-    inline void updateHashRate(uint64_t _n)
+    void updateHashRate(uint32_t _groupSize, uint32_t _increment) noexcept
     {
+        m_groupCount += _increment;
+        bool b = true;
+        if (!m_hashRateUpdate.compare_exchange_strong(b, false))
+            return;
         using namespace std::chrono;
-        steady_clock::time_point t = steady_clock::now();
+        auto t = steady_clock::now();
         auto us = duration_cast<microseconds>(t - m_hashTime).count();
         m_hashTime = t;
 
-        float hr = 0.0;
-        if (us)
-            hr = (float(_n) * 1.0e6f) / us;
-        m_hashRate.store(hr, std::memory_order_relaxed);
+        m_hashRate.store(us ? (float(m_groupCount * _groupSize) * 1.0e6f) / us : 0.0f,
+                         std::memory_order_relaxed);
+        m_groupCount = 0;
     }
 
     static unsigned s_dagLoadMode;
@@ -317,6 +330,8 @@ private:
     mutable Mutex x_work;
     std::chrono::steady_clock::time_point m_hashTime = std::chrono::steady_clock::now();
     std::atomic<float> m_hashRate = {0.0};
+    uint64_t m_groupCount = 0;
+    atomic<bool> m_hashRateUpdate = {false};
 };
 
 }  // namespace eth

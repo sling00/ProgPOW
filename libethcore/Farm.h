@@ -460,6 +460,7 @@ private:
                 progress.minerMonitors.push_back(hw);
 
             }
+        miner->TriggerHashRateUpdate();
         }
 
         m_progress = progress;
