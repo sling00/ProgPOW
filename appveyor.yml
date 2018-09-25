@@ -29,7 +29,7 @@ build_script:
   - cmake --build build --config %CONFIGURATION% --target package
   - ps: |
       . build/ethminer/buildinfo.ps1
-      mv build/ethminer.zip build/progpowminer-$env:project_version-$env:system_name-$env:system_processor.zip
+      mv build/progpowminer.zip build/progpowminer-$env:project_version-$env:system_name-$env:system_processor.zip
 #      until cmake files are redone to reflect progpowminer, the above at least gets the zip name correctly on appveyor.
 #      mv build/ethminer.zip build/$env:project_name-$env:project_version-$env:system_name-$env:system_processor.zip
 
