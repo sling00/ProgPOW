@@ -351,7 +351,6 @@ void CUDAMiner::listDevices()
     }
 }
 
-/// XXX
 unsigned const CUDAMiner::c_defaultBlockSize = 512;
 unsigned const CUDAMiner::c_defaultGridSize = 1024;  // * CL_DEFAULT_LOCAL_WORK_SIZE
 unsigned const CUDAMiner::c_defaultNumStreams = 2;
@@ -520,8 +519,6 @@ void CUDAMiner::compileKernel(int epoch, uint64_t dag_words)
 
 void CUDAMiner::search(uint8_t const* header, uint64_t target, bool _ethStratum, uint64_t _startN, const dev::eth::WorkPackage& w)
 {
-    const uint16_t kReportingInterval = 512;  // Must be a power of 2 passes
-
     bool initialize = false;
     if (memcmp(&m_current_header, header, sizeof(hash32_t)))
     {
@@ -616,11 +613,9 @@ void CUDAMiner::search(uint8_t const* header, uint64_t target, bool _ethStratum,
                     }
             }
 
-            // stretch cuda passes to miniize the effects of
-            // OS latency variability
-            m_searchPasses++;
-            if ((m_searchPasses & (kReportingInterval - 1)) == 0)
-                updateHashRate(batch_size * kReportingInterval);
+            // Update the hash rate
+            updateHashRate(batch_size, 1);
+
             bool t = true;
             if (m_new_work.compare_exchange_strong(t, false)) {
                 if (g_logVerbosity >= 6)
