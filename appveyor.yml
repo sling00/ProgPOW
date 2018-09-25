@@ -29,11 +29,13 @@ build_script:
   - cmake --build build --config %CONFIGURATION% --target package
   - ps: |
       . build/ethminer/buildinfo.ps1
-      mv build/ethminer.zip build/$env:project_name-$env:project_version-$env:system_name-$env:system_processor.zip
+      mv build/ethminer.zip build/progpowminer-$env:project_version-$env:system_name-$env:system_processor.zip
+#      until cmake files are redone to reflect progpowminer, the above at least gets the zip name correctly on appveyor.
+#      mv build/ethminer.zip build/$env:project_name-$env:project_version-$env:system_name-$env:system_processor.zip
 
 artifacts:
-  - path: build/ethminer-*.zip
-    name: ethminer
+  - path: build/progpowminer-*.zip
+    name: progpowminer
 
 deploy:
   # Create GitHub release, also set the release name and description.
@@ -44,7 +46,7 @@ deploy:
   force_update: true  # Force update in case Travis CI created the release before.
   prerelease: $(project_version_is_prerelease)
   draft: false
-  artifact: ethminer
+  artifact: progpowminer
   auth_token:
     secure: uDRcvbW+9GIyKlZ9guJfWOQ6jg0An6eULg6mEkYgdKn/GVNpYSKvO5oHxP0U8a+e
   on:
