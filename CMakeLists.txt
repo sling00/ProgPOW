@@ -19,7 +19,7 @@ HunterGate(
     LOCAL
 )
 
-project(ethminer)
+project(progpowminer)
 set(PROJECT_VERSION 0.16.0rc1-1)
 
 cable_set_build_type(DEFAULT Release CONFIGURATION_TYPES Release RelWithDebInfo)
