@@ -293,8 +293,6 @@ void CLMiner::workLoop()
 
     uint64_t startNonce = 0;
 
-    const uint8_t kIntervalPasses = 4;  // must be a power of 2 passes
-
     // The work package currently processed by GPU.
     WorkPackage current;
     current.header = h256{1u};
@@ -431,12 +429,7 @@ void CLMiner::workLoop()
             startNonce += results.hashCount * m_workgroupSize;
 
             // Report hash count
-            m_hashCount += results.hashCount;
-            if ((++m_searchPasses & (kIntervalPasses - 1)) == 0)
-            {
-                updateHashRate(m_hashCount * m_workgroupSize);
-                m_hashCount = 0;
-            }
+            updateHashRate(m_workgroupSize, results.hashCount);
         }
         m_queue[0].finish();
     }
