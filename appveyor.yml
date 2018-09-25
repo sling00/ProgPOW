@@ -3,6 +3,7 @@ branches:
   only:
     - master
     - v0.16.0rc1-progpow-opencl-only
+    - v0.16.0rc1-1-progpow-cuda10
     - /v\d+\..+/
     - /release.*/
     - /*opencl-only*/
@@ -18,11 +19,12 @@ environment:
 
 # Download CUDA Windows installer (local) and extract /compiler/* to /CUDA/vX.0/ zip archive.
 # CUDA.zip = Cuda 9.2
+# CUDA-v10.0-Windows10.zip = Cuda 10.0
 install: |
   git submodule update --init --recursive
-  appveyor DownloadFile http://i.am.sling00.com/CUDA.zip
-  7z x CUDA.zip -oC:\
-  set PATH=C:\Python36-x64;C:\Python36-x64\Scripts;%PATH%;C:\CUDA\v9.2\bin
+  appveyor DownloadFile http://i.am.sling00.com/CUDA-v10.0-Windows10.zip
+  7z x CUDA-v10.0-Windows10.zip -oC:\
+  set PATH=C:\Python36-x64;C:\Python36-x64\Scripts;%PATH%;C:\CUDA\v10.0\bin
   pip install requests gitpython
   nvcc -V
 
